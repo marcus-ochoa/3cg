@@ -7,11 +7,11 @@ function GrabberClass:new(piles, buttons)
   local grabber = {}
   local metadata = {__index = GrabberClass}
   setmetatable(grabber, metadata)
-  grabber.grabbedPile = GrabbedPileClass:new()
+  
+  grabber.cardContainer = CardContainerClass:new(true, 1)
+  grabber.cardDisplayer = CardDisplayerClass:new()
 
-  grabber.piles = piles
-  grabber.buttons = buttons
-  grabber.prevPile = nil
+  grabber.prevCardContainer = nil
 
   return grabber
 end
@@ -19,33 +19,34 @@ end
 -- Check over all buttons and cards to update states and update grabbed pile position
 function GrabberClass:onMouseMoved(x, y)
 
-  for _, button in ipairs(self.buttons) do
+  for _, button in ipairs(UIManager.buttons) do
     button:checkForMouseOver(x, y)
   end
 
-  for _, stack in ipairs(self.piles) do
-    stack:checkForMouseOverCard(x, y)
+  for _, cardDisplayer in ipairs(UIManager.cardDisplayers.interactables) do
+    cardDisplayer:checkForMouseOverCard(x, y)
   end
 
-  self.grabbedPile:updatePosition(x, y)
+  self.cardDisplayer:updatePosition(x, y)
 end
 
 -- Check over all buttons and piles to interact
 function GrabberClass:onMousePressed(x, y)
 
-  for i = #self.buttons, 1, -1 do
-    if self.buttons[i]:checkForMouseOver(x, y) then
-      self.buttons[i]:onClicked()
+  for _, button in ipairs(UIManager.buttons) do
+    if button:checkForMouseOver(x, y) then
+      button:onClicked()
       return
     end
   end
 
-  -- If over a grabbable card, add it to the grabbed pile
-  for _, stack in ipairs(self.piles) do
-    local card = stack:checkForMouseOverCard(x, y)
+  -- If over a grabbable card, add it to the grabbed container
+  for _, cardDisplayer in ipairs(UIManager.cardDisplayers.interactables) do
+    local card = cardDisplayer:checkForMouseOverCard(x, y)
     if card ~= nil then
-      self.grabbedPile:insertCards(stack:removeCards(card))
-      self.prevPile = stack
+      card:setGrabbed()
+      cardDisplayer.cardContainer.moveCard(card, self.cardContainer)
+      self.prevCardContainer = cardDisplayer.cardContainer
       return
     end
   end
@@ -55,31 +56,20 @@ end
 function GrabberClass:onMouseReleased(x, y)
   
   -- Nothing to release if you aren't holding anything
-  if #self.grabbedPile.stack <= 0 then
+  if #self.cardContainer.cardTable <= 0 then
     return
   end
 
-  -- Check all stacks and try to release if possible
-  local isValidReleasePosition = false
+  self.cardContainer.cardTable[1]:setReleased()
 
-  for _, stack in ipairs(self.piles) do
-    if stack:checkForMouseOverStack(x, y) then
-      isValidReleasePosition = stack:checkForValidRelease(self.grabbedPile)
-
-      -- If over a valid stack, notify previous stack and add cards to grabbed pile
-      if isValidReleasePosition then
-        if stack ~= self.prevPile then
-          self.prevPile:cardsMoved()
-        end
-        stack:insertCards(self.grabbedPile:removeCards())
+  for _, cardDisplayer in ipairs(UIManager.cardDisplayers.interactables) do
+    if cardDisplayer:checkForMouseOverRegion(x, y) then
+      if self.cardContainer:moveCard(self.cardContainer.cardTable[1], cardDisplayer.cardContainer, self.prevCardContainer) then
+        return
       end
-
       break
     end
   end
 
-  -- If invalid release, put the cards back in the previous pile
-  if not isValidReleasePosition then
-    self.prevPile:insertCards(self.grabbedPile:removeCards())
-  end
+  self.cardContainer:moveCard(self.cardContainer.cardTable[1], self.prevCardContainer, self.prevCardContainer)
 end

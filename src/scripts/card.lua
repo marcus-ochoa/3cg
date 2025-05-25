@@ -11,56 +11,63 @@ CARD_STATE = {
   GRABBED = 2
 }
 
-function CardClass:new(suit, rank, faceUpSprite, faceDownSprite)
+function CardClass:new(name, text, cost, power)
   local card = {}
   local metadata = {__index = CardClass}
   setmetatable(card, metadata)
-  
-  card.position = nil
+
   card.size = Vector(70, 95)
   card.state = CARD_STATE.IDLE
-  card.suit = suit
-  card.rank = rank
+  
+  card.name = name
+  card.text = text
+
+  card.cost = cost
+  card.baseCost = cost
+
+  card.power = power
+  card.basePower = power
+
   card.isFaceUp = true
-  card.spriteScale = 0.5
-  card.faceUpSprite = faceUpSprite
-  card.faceDownSprite = faceDownSprite
+  card.isPlayed = false
   
   return card
 end
 
-function CardClass:draw()
-  
+function CardClass:draw(position)
+
   -- Draw shadow if cards are not idle (light if mouse hovering, heavy if grabbed)
   if self.state ~= CARD_STATE.IDLE then
     love.graphics.setColor(0, 0, 0, 0.8)
     local offset = 4 * (self.state == CARD_STATE.GRABBED and 2 or 1)
-    love.graphics.rectangle("fill", self.position.x + offset, self.position.y + offset, self.size.x, self.size.y, 6, 6)
+    love.graphics.rectangle("fill", position.x + offset, position.y + offset, self.size.x, self.size.y, 6, 6)
   end
 
   love.graphics.setColor(1, 1, 1, 1)
 
-  -- Draws face up or face down sprite
+  -- Draws face up or face down image
   if self.isFaceUp then
-    love.graphics.draw(self.faceUpSprite, self.position.x, self.position.y, 0, self.spriteScale, self.spriteScale)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
   else
-    love.graphics.draw(self.faceDownSprite, self.position.x, self.position.y, 0, self.spriteScale, self.spriteScale)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
   end
 end
 
 -- Checks if the mouse is over the card and updates state accordingly
-function CardClass:checkForMouseOver(x, y)
+function CardClass:checkForMouseOver(position, mousePosition)
 
-  if not self.isFaceUp then
+  if (not self.isFaceUp) or (self.isPlayed) then
     self.state = CARD_STATE.IDLE
     return
   end
 
   local isMouseOver = 
-    x > self.position.x and
-    x < self.position.x + self.size.x and
-    y > self.position.y and
-    y < self.position.y + self.size.y
+    mousePosition.x > position.x and
+    mousePosition.x < position.x + self.size.x and
+    mousePosition.y > position.y and
+    mousePosition.y < position.y + self.size.y
 
   self.state = isMouseOver and CARD_STATE.MOUSE_OVER or CARD_STATE.IDLE
   return isMouseOver

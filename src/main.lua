@@ -16,6 +16,10 @@ local piles = {}
 local buttons = {}
 local winButton
 
+GameManager = GameManagerClass:new()
+UIManager = UIManagerClass:new()
+Board = BoardClass:new()
+
 function love.load()
 
   -- Window setup
@@ -100,7 +104,7 @@ function loadGame()
   -- Make buttons
   local resetButton = ButtonClass:new(780, 680, 100, 50, nil, resetGame, nil, nil, nil, "RESET")
   winButton = ButtonClass:new(25, 25, 910, 710, nil, resetGame, nil, nil, nil, "YOU WIN!\n(click to reset)")
-  winButton.state = BUTTON_STATE.INACTIVE
+  winButton.active = false
   table.insert(buttons, resetButton)
   table.insert(buttons, winButton)
 
@@ -119,7 +123,7 @@ function resetGame()
   end
 
   setGame(resetDeck)
-  winButton.state = BUTTON_STATE.INACTIVE
+  winButton.active = false
 end
 
 function setGame(tempDeck)
@@ -163,6 +167,6 @@ function checkWinCondition(pile, card)
     end
   end
 
-  winButton.state = BUTTON_STATE.IDLE
+  winButton.active = true
 end
 
