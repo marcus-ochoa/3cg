@@ -5,7 +5,7 @@
 
 CardDisplayerClass = {}
 
-function CardDisplayerClass:new(xPos, yPos, xSize, ySize, xCardOffset, yCardOffset, interactable, cardContainer, fillEnabled, fillColor)
+function CardDisplayerClass:new(xPos, yPos, xSize, ySize, layer, xCardOffset, yCardOffset, xCardTotalOffset, yCardTotalOffset, rows, interactable, cardContainer, fillEnabled, fillColor)
   
   local cardDisplayer = {}
   local metadata = {__index = CardDisplayerClass}
@@ -15,7 +15,7 @@ function CardDisplayerClass:new(xPos, yPos, xSize, ySize, xCardOffset, yCardOffs
   cardDisplayer.position = Vector(xPos, yPos)
   cardDisplayer.size = Vector(xSize, ySize)
 
-  cardDisplayer.cardsTotalOffset = nil
+  cardDisplayer.cardsTotalOffset = Vector(xCardTotalOffset, yCardTotalOffset)
   -- Offset from one card in the stack to the next
   cardDisplayer.cardIndividualOffset = Vector(xCardOffset, yCardOffset)
 
@@ -24,6 +24,10 @@ function CardDisplayerClass:new(xPos, yPos, xSize, ySize, xCardOffset, yCardOffs
 
   cardDisplayer.fillEnabled = fillEnabled
   cardDisplayer.fillColor = fillColor
+
+  cardDisplayer.rows = rows
+
+  UIManager:registerDrawable(cardDisplayer, layer)
 
   return cardDisplayer
 end
@@ -36,9 +40,8 @@ function CardDisplayerClass:draw()
     love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
   end
 
-  for _, card in ipairs(self.cardContainer.cardTable) do
-    local cardPosition = self.position + self.cardsTotalOffset + ((#self.stack - 1) * self.cardIndividualOffset)
-    card:draw(cardPosition)
+  for i, card in ipairs(self.cardContainer.cardTable) do
+    card:draw(self:getCardPosition(i))
   end
 end
 
@@ -73,7 +76,13 @@ function CardDisplayerClass:checkForMouseOverCard(x, y)
 end
 
 function CardDisplayerClass:getCardPosition(cardIndex)
-  return self.position + self.cardsTotalOffset + ((cardIndex - 1) * self.cardIndividualOffset)
+
+  local row = self.rows - (cardIndex % self.rows)
+  local col = math.ceil(cardIndex / self.rows)
+
+  posOffset = Vector((col - 1) * self.cardIndividualOffset.x, (row - 1) * self.cardIndividualOffset.y)
+  
+  return self.position + self.cardsTotalOffset + posOffset
 end
 
 function CardDisplayerClass:updatePosition(x, y)

@@ -1,16 +1,19 @@
 
 TextboxClass = {}
 
-function TextboxClass:new(xPos, yPos, xSize, ySize, text, fillColor)
+function TextboxClass:new(xPos, yPos, xSize, ySize, layer, text, fillEnabled, fillColor)
   local textbox = {}
   local metadata = {__index = TextboxClass}
   setmetatable(textbox, metadata)
 
   textbox.position = Vector(xPos, yPos)
   textbox.size = Vector(xSize, ySize)
-  textbox.active = true;
+  textbox.active = true
   textbox.text = text
-  textbox.fillColor = fillColor;
+  textbox.fillEnabled = fillEnabled
+  textbox.fillColor = fillColor
+
+  UIManager:registerDrawable(textbox, layer)
 
   return textbox
 end
@@ -21,9 +24,17 @@ function TextboxClass:draw()
     return
   end
 
-  -- Draw back fill
-  love.graphics.setColor(self.fillColor or {0.5, 0.5, 0.5, 1})
-  love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+  -- Draws back fill if set
+  if self.fillEnabled then
+    love.graphics.setColor(self.fillColor or {0.5, 0.5, 0.5, 1})
+    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+  end
+
+  -- Draws back fill if set
+  if self.fillEnabled then
+    love.graphics.setColor(self.fillColor or {0.5, 0.5, 0.5, 1})
+    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+  end
 
   -- Draw text if set
   if self.text ~= nil then

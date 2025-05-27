@@ -1,7 +1,7 @@
 
 ButtonClass = {}
 
-function ButtonClass:new(xPos, yPos, xSize, ySize, owner, event, text)
+function ButtonClass:new(xPos, yPos, xSize, ySize, layer, owner, event, args, text)
   local button = {}
   local metadata = {__index = ButtonClass}
   setmetatable(button, metadata)
@@ -15,6 +15,10 @@ function ButtonClass:new(xPos, yPos, xSize, ySize, owner, event, text)
   -- Owner and function to call when button pressed
   button.owner = owner
   button.event = event
+  button.args = args
+
+  UIManager:registerDrawable(button, layer)
+  UIManager:registerClickable(button)
 
   return button
 end
@@ -61,6 +65,13 @@ function ButtonClass:checkForMouseOver(x, y)
 end
 
 -- Runs event when clicked
-function ButtonClass:onClicked()
-  self.event(self.owner)
+function ButtonClass:click()
+
+  if (self.args == nil) then
+    self.event(self.owner)
+  else
+  
+  ---@diagnostic disable-next-line: deprecated
+  self.event(self.owner, unpack(self.args))
+  end
 end

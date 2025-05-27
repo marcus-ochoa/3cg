@@ -3,7 +3,7 @@
 
 -- === USED STARTER CODE FROM CLASS == 
 
-CardClass = {}
+CARD_SIZE = Vector(140, 180)
 
 CARD_STATE = {
   IDLE = 0,
@@ -11,25 +11,31 @@ CARD_STATE = {
   GRABBED = 2
 }
 
-function CardClass:new(name, text, cost, power)
+CardClass = {}
+
+function CardClass:new(cardDataClass)
   local card = {}
   local metadata = {__index = CardClass}
   setmetatable(card, metadata)
 
-  card.size = Vector(70, 95)
+  card.id = cardDataClass.id
+
+  card.size = CARD_SIZE
   card.state = CARD_STATE.IDLE
   
-  card.name = name
-  card.text = text
+  card.name = cardDataClass.name
+  card.text = cardDataClass.text
 
-  card.cost = cost
-  card.baseCost = cost
+  card.cost = cardDataClass.cost
+  card.baseCost = cardDataClass.cost
 
-  card.power = power
-  card.basePower = power
+  card.power = cardDataClass.power
+  card.basePower = cardDataClass.power
 
   card.isFaceUp = true
   card.isPlayed = false
+
+  card.container = nil
   
   return card
 end
@@ -49,9 +55,17 @@ function CardClass:draw(position)
   if self.isFaceUp then
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
+
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.printf(self.name, position.x, position.y - 8 + (self.size.y * (1/10)), self.size.x - 8, "center")
+    love.graphics.printf("Cost: " .. self.cost, position.x, position.y - 8 + (self.size.y * (2/10)), self.size.x - 8, "center")
+    love.graphics.printf("Power: " .. self.power, position.x, position.y - 8 + (self.size.y * (3/10)), self.size.x - 8, "center")
+    love.graphics.printf(self.text, position.x + 8, position.y - 8 + (self.size.y * (5/10)), self.size.x - 8, "left")
   else
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
+    love.graphics.setColor(0.7, 0, 0.5, 1)
+    love.graphics.rectangle("fill", position.x + 5, position.y + 5, self.size.x - 10, self.size.y - 10, 6, 6)
   end
 end
 
@@ -86,4 +100,10 @@ function CardClass:setIdle()
   if self.state ~= CARD_STATE.GRABBED then
     self.state = CARD_STATE.IDLE
   end
+end
+
+function CardClass:addPower(powerToAdd)
+  if (self.power + powerToAdd) >= 0 then
+      self.power = self.power + powerToAdd
+    end
 end

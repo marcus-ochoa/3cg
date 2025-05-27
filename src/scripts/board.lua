@@ -22,7 +22,8 @@ function BoardClass:new()
       CardContainerClass:new(true, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.C)
     },
     staged = CardContainerClass:new(true, CARD_CONTAINER_TYPES.STAGED),
-    mana = 3
+    mana = 3,
+    points = 0
   }
 
   board.opponent = {
@@ -35,33 +36,11 @@ function BoardClass:new()
       CardContainerClass:new(false, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.C)
     },
     staged = CardContainerClass:new(false, CARD_CONTAINER_TYPES.STAGED),
-    mana = 3
-  }
-
-  board.locations = {
-    {
-      board.player.locations[LOCATIONS.A],
-      board.opponent.locations[LOCATIONS.A]
-    },
-    {
-      board.player.locations[LOCATIONS.B],
-      board.opponent.locations[LOCATIONS.B]
-    },
-    {
-      board.player.locations[LOCATIONS.C],
-      board.opponent.locations[LOCATIONS.C]
-    },
+    mana = 3,
+    points = 0
   }
 
   return board
-end
-
-function BoardClass:playerTurn()
-
-end
-
-function BoardClass:reveal()
-
 end
 
 function BoardClass:addMana(isPlayer, mana)
@@ -83,4 +62,17 @@ end
 function BoardClass:unstageCard(isPlayer, card)
   local subject = isPlayer and self.player or self.opponent
   subject.staged:removeCard(card)
+end
+
+function BoardClass:reset(isPlayer)
+  local subject = isPlayer and self.player or self.opponent
+  subject.deck:clear()
+  subject.hand:clear()
+  subject.discard:clear()
+  for _, location in subject.locations do
+    location:clear()
+  end
+  subject.staged:clear()
+  subject.mana = 3
+  subject.points = 0
 end
