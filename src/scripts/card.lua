@@ -35,6 +35,11 @@ function CardClass:new(cardDataClass)
   card.isFaceUp = true
   card.isPlayed = false
 
+  card.revealBehavior = cardDataClass.revealBehavior
+  card.endTurnBehavior = cardDataClass.endTurnBehavior
+  card.discardBehavior = cardDataClass.discardBehavior
+  card.cardPlayedHereBehavior = cardDataClass.cardPlayedHereBehavior
+
   card.container = nil
   
   return card
@@ -87,6 +92,43 @@ function CardClass:checkForMouseOver(position, mousePosition)
   return isMouseOver
 end
 
+function CardClass:onReveal()
+
+  self.isFaceUp = true
+  self.isPlayed = true
+
+  if self.revealBehavior then
+    self.revealBehavior(self)
+  end
+end
+
+function CardClass:onEndTurn()
+  if self.endTurnBehavior then
+    self.endTurnBehavior(self)
+  end
+end
+
+function CardClass:onDiscard()
+
+  self.isPlayed = false
+  self.power = self.basePower
+  self.cost = self.baseCost
+
+  if self.discardBehavior then
+    self.discardBehavior(self)
+  end
+end
+
+function CardClass:onCardPlayedHere(playedCard)
+
+  if not self.isPlayed then return end
+  if playedCard == self then return end
+
+  if self.cardPlayedHereBehavior then
+    self.cardPlayedHereBehavior(self, playedCard)
+  end
+end
+
 function CardClass:setGrabbed()
   self.state = CARD_STATE.GRABBED
 end
@@ -106,4 +148,8 @@ function CardClass:addPower(powerToAdd)
   if (self.power + powerToAdd) >= 0 then
       self.power = self.power + powerToAdd
     end
+end
+
+function CardClass:getCopy()
+  return CardClass:new(CardDataClasses[self.id])
 end

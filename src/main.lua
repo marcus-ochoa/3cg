@@ -14,6 +14,7 @@ require "scripts.cardContainer"
 require "scripts.cardDisplayer"
 require "scripts.card"
 require "scripts.cardDataClass"
+require "scripts.cardBehaviors"
 require "scripts.textbox"
 require "scripts.button"
 

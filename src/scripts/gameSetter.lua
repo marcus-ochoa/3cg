@@ -27,7 +27,8 @@ local function loadCardData()
 
   for i = 2, #cardData do
     local cardVals = cardData[i]
-    local card = CardDataClass:new(i, cardVals[1], cardVals[2], cardVals[3], cardVals[4])
+    ---@diagnostic disable-next-line: deprecated
+    local card = CardDataClass:new(i, unpack(cardVals))
     table.insert(CardDataClasses, card)
   end
 end
@@ -73,14 +74,9 @@ end
 
 function GameSetter.initializeGame()
   loadCardData()
-  setGame()
 end
 
 function GameSetter.resetGame()
-  loadCardData()
-
-  Board:reset(true)
-  Board:reset(false)
-
+  Board:reset()
   setGame()
 end

@@ -23,7 +23,7 @@ function CardContainerClass:new(isPlayerOwned, type, capacity, location)
   cardContainer.type = type
   cardContainer.cardTable = {}
   cardContainer.location = location
-  cardContainer.capacity = capacity
+  cardContainer.capacity = capacity or 100
   cardContainer.isPlayerOwned = isPlayerOwned
 
   return cardContainer
@@ -31,9 +31,12 @@ end
 
 function CardContainerClass:moveCard(destContainer, cardToMove, prevContainer)
 
-  local fromGrabber = prevContainer and true or false
   prevContainer = prevContainer or self
-  cardToMove = cardToMove or self.cardTable[#self.cardTable]
+
+  if cardToMove == nil then
+    if #self.cardTable <= 0 then return end
+    cardToMove = self.cardTable[#self.cardTable]
+  end
   
   if (#destContainer.cardTable >= destContainer.capacity) then
     print("Cannot move card to new location since its already full")
@@ -79,12 +82,19 @@ function CardContainerClass:removeCard(cardToRemove)
 end
 
 function CardContainerClass:addCard(cardToAdd)
+
+  if (#self.cardTable >= self.capacity) then
+    print("Cannot add card to container since its already full")
+    return false
+  end
+
   cardToAdd.container = self
   table.insert(self.cardTable, cardToAdd)
+  return true
 end
 
 function CardContainerClass:getTotalPower()
-  powerSum = 0
+  local powerSum = 0
 
   for _, card in ipairs(self.cardTable) do
     if card.isPlayed then
@@ -107,12 +117,34 @@ end
 
 function CardContainerClass:addPower(powerToAdd)
   for _, card in ipairs(self.cardTable) do
-    if (card.power + powerToAdd) >= 0 then
-      card.power = card.power + powerToAdd
-    end
+    card:addPower(powerToAdd)
+  end
+end
+
+function CardContainerClass:addPower(powerToAdd)
+  for _, card in ipairs(self.cardTable) do
+    card:addPower(powerToAdd)
+  end
+end
+
+function CardContainerClass:setPower(powerToSet)
+  for _, card in ipairs(self.cardTable) do
+    card.power = powerToSet
   end
 end
 
 function CardContainerClass:getNumberOfCards()
   return #self.cardTable
+end
+
+function CardContainerClass:callOnEndTurn()
+  for _, card in ipairs(self.cardTable) do
+    card:onEndTurn()
+  end
+end
+
+function CardContainerClass:callOnCardPlayedHere(cardPlayed)
+  for _, card in ipairs(self.cardTable) do
+    card:onCardPlayedHere(cardPlayed)
+  end
 end

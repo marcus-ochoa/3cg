@@ -35,7 +35,7 @@ function UIManagerClass:setup()
 
   self.buttons = {
     submit = ButtonClass:new(1300, 1000, 100, 50, 1, GameManager, GameManager.updateGameState, {GAME_STATE.OPPONENT_TURN}, "submit"),
-    restart = ButtonClass:new(1500, 1000, 100, 50, 1, GameManager, GameManager.updateGameState, {GAME_STATE.MENU}, "restart"),
+    restart = ButtonClass:new(850, 600, 100, 50, 3, GameManager, GameManager.updateGameState, {GAME_STATE.MENU}, "restart"),
     start = ButtonClass:new(850, 600, 100, 50, 3, GameManager, GameManager.updateGameState, {GAME_STATE.PLAYER_TURN}, "start"),
   }
 
@@ -45,6 +45,7 @@ function UIManagerClass:setup()
       playerPoints = TextboxClass:new(1500, 600, 150, 50, 1, "points", false),
       opponentPoints = TextboxClass:new(1500, 200, 150, 50, 1, "opp points", false),
       menu = TextboxClass:new(0, 0, 1800, 1100, 2, "IM GONNA SNAP\n(a Marvel Snap-pish game)", true, {0.7, 0, 0.5, 1}),
+      result = TextboxClass:new(0, 0, 1800, 1100, 2, "YOU SOMETHING", true, {0.7, 0, 0.5, 1}),
     },
     playerLocations = {
       TextboxClass:new(420, 600, 100, 50, 1, "placeholder", false),
@@ -121,6 +122,7 @@ function UIManagerClass:updateGameState(newGameState)
     self.buttons.submit.active = false
     self.buttons.restart.active = false
     self.buttons.start.active = true
+    self.textboxes.general.result.active = false
     self.textboxes.general.menu.active = true
   
   elseif newGameState == GAME_STATE.PLAYER_TURN then
@@ -132,6 +134,10 @@ function UIManagerClass:updateGameState(newGameState)
   elseif newGameState == GAME_STATE.OPPONENT_TURN then
     self:setCardsInteractable(false)
     self.buttons.submit.active = false
+
+  elseif newGameState == GAME_STATE.RESULT then
+    self.buttons.restart.active = true
+    self.textboxes.general.result.active = true
   end
 
 end
