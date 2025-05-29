@@ -3,7 +3,7 @@
 
 -- === USED STARTER CODE FROM CLASS == 
 
-CardClass = {}
+CARD_SIZE = Vector(140, 180)
 
 CARD_STATE = {
   IDLE = 0,
@@ -11,59 +11,122 @@ CARD_STATE = {
   GRABBED = 2
 }
 
-function CardClass:new(suit, rank, faceUpSprite, faceDownSprite)
+CardClass = {}
+
+function CardClass:new(cardDataClass)
   local card = {}
   local metadata = {__index = CardClass}
   setmetatable(card, metadata)
-  
-  card.position = nil
-  card.size = Vector(70, 95)
+
+  card.id = cardDataClass.id
+
+  card.size = CARD_SIZE
   card.state = CARD_STATE.IDLE
-  card.suit = suit
-  card.rank = rank
+  
+  card.name = cardDataClass.name
+  card.text = cardDataClass.text
+
+  card.cost = cardDataClass.cost
+  card.baseCost = cardDataClass.cost
+
+  card.power = cardDataClass.power
+  card.basePower = cardDataClass.power
+
   card.isFaceUp = true
-  card.spriteScale = 0.5
-  card.faceUpSprite = faceUpSprite
-  card.faceDownSprite = faceDownSprite
+  card.isPlayed = false
+
+  card.revealBehavior = cardDataClass.revealBehavior
+  card.endTurnBehavior = cardDataClass.endTurnBehavior
+  card.discardBehavior = cardDataClass.discardBehavior
+  card.cardPlayedHereBehavior = cardDataClass.cardPlayedHereBehavior
+
+  card.container = nil
   
   return card
 end
 
-function CardClass:draw()
-  
+function CardClass:draw(position)
+
   -- Draw shadow if cards are not idle (light if mouse hovering, heavy if grabbed)
   if self.state ~= CARD_STATE.IDLE then
     love.graphics.setColor(0, 0, 0, 0.8)
     local offset = 4 * (self.state == CARD_STATE.GRABBED and 2 or 1)
-    love.graphics.rectangle("fill", self.position.x + offset, self.position.y + offset, self.size.x, self.size.y, 6, 6)
+    love.graphics.rectangle("fill", position.x + offset, position.y + offset, self.size.x, self.size.y, 6, 6)
   end
 
   love.graphics.setColor(1, 1, 1, 1)
 
-  -- Draws face up or face down sprite
+  -- Draws face up or face down image
   if self.isFaceUp then
-    love.graphics.draw(self.faceUpSprite, self.position.x, self.position.y, 0, self.spriteScale, self.spriteScale)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
+
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.printf(self.name, position.x, position.y - 8 + (self.size.y * (1/10)), self.size.x - 8, "center")
+    love.graphics.printf("Cost: " .. self.cost, position.x, position.y - 8 + (self.size.y * (2/10)), self.size.x - 8, "center")
+    love.graphics.printf("Power: " .. self.power, position.x, position.y - 8 + (self.size.y * (3/10)), self.size.x - 8, "center")
+    love.graphics.printf(self.text, position.x + 8, position.y - 8 + (self.size.y * (5/10)), self.size.x - 8, "left")
   else
-    love.graphics.draw(self.faceDownSprite, self.position.x, self.position.y, 0, self.spriteScale, self.spriteScale)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
+    love.graphics.setColor(0.7, 0, 0.5, 1)
+    love.graphics.rectangle("fill", position.x + 5, position.y + 5, self.size.x - 10, self.size.y - 10, 6, 6)
   end
 end
 
 -- Checks if the mouse is over the card and updates state accordingly
-function CardClass:checkForMouseOver(x, y)
+function CardClass:checkForMouseOver(position, mousePosition)
 
-  if not self.isFaceUp then
+  if (not self.isFaceUp) or (self.isPlayed) then
     self.state = CARD_STATE.IDLE
     return
   end
 
   local isMouseOver = 
-    x > self.position.x and
-    x < self.position.x + self.size.x and
-    y > self.position.y and
-    y < self.position.y + self.size.y
+    mousePosition.x > position.x and
+    mousePosition.x < position.x + self.size.x and
+    mousePosition.y > position.y and
+    mousePosition.y < position.y + self.size.y
 
   self.state = isMouseOver and CARD_STATE.MOUSE_OVER or CARD_STATE.IDLE
   return isMouseOver
+end
+
+function CardClass:onReveal()
+
+  self.isFaceUp = true
+  self.isPlayed = true
+
+  if self.revealBehavior then
+    self.revealBehavior(self)
+  end
+end
+
+function CardClass:onEndTurn()
+  if self.endTurnBehavior then
+    self.endTurnBehavior(self)
+  end
+end
+
+function CardClass:onDiscard()
+
+  self.isPlayed = false
+  self.power = self.basePower
+  self.cost = self.baseCost
+
+  if self.discardBehavior then
+    self.discardBehavior(self)
+  end
+end
+
+function CardClass:onCardPlayedHere(playedCard)
+
+  if not self.isPlayed then return end
+  if playedCard == self then return end
+
+  if self.cardPlayedHereBehavior then
+    self.cardPlayedHereBehavior(self, playedCard)
+  end
 end
 
 function CardClass:setGrabbed()
@@ -79,4 +142,14 @@ function CardClass:setIdle()
   if self.state ~= CARD_STATE.GRABBED then
     self.state = CARD_STATE.IDLE
   end
+end
+
+function CardClass:addPower(powerToAdd)
+  if (self.power + powerToAdd) >= 0 then
+      self.power = self.power + powerToAdd
+    end
+end
+
+function CardClass:getCopy()
+  return CardClass:new(CardDataClasses[self.id])
 end
