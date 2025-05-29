@@ -21,7 +21,7 @@ require "scripts.button"
 function love.load()
 
   -- Window setup
-  love.window.setMode(1800, 1100)
+  love.window.setMode(1920, 1080, {fullscreen=true})
   love.window.setTitle("I'm Gonna Snap")
   love.graphics.setBackgroundColor(0, 0.7, 0.2, 1)
 

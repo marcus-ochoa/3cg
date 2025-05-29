@@ -76,3 +76,7 @@ function GameManagerClass:updateGameState(newGameState)
     end
   end
 end
+
+function GameManagerClass:closeGame()
+  love.event.quit()
+end
