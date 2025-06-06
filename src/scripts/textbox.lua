@@ -26,19 +26,19 @@ function TextboxClass:draw()
 
   -- Draws back fill if set
   if self.fillEnabled then
-    love.graphics.setColor(self.fillColor or {0.5, 0.5, 0.5, 1})
+    love.graphics.setColor(self.fillColor or Colors.gray)
     love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
   end
 
   -- Draws back fill if set
   if self.fillEnabled then
-    love.graphics.setColor(self.fillColor or {0.5, 0.5, 0.5, 1})
+    love.graphics.setColor(self.fillColor or Colors.gray)
     love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
   end
 
   -- Draw text if set
   if self.text ~= nil then
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(Colors.white)
     love.graphics.printf(self.text, self.position.x, self.position.y - 8 + (self.size.y / 2), self.size.x, "center")
   end
 end

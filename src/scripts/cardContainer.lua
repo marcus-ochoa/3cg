@@ -39,10 +39,10 @@ function CardContainerClass:moveCard(destContainer, cardToMove, prevContainer)
   end
   
   if (#destContainer.cardTable >= destContainer.capacity) then
-    print("Cannot move card to new location since its already full")
     return false
   end
 
+  -- If in the staging phase, add and subtract mana appropriately
   if (GameManager.gameState == GAME_STATE.PLAYER_TURN) or (GameManager.gameState == GAME_STATE.OPPONENT_TURN) then
     if (prevContainer.type == CARD_CONTAINER_TYPES.HAND) and (destContainer.type == CARD_CONTAINER_TYPES.LOCATION) then
       if not Board:addMana(destContainer.isPlayerOwned, -cardToMove.baseCost) then
@@ -55,6 +55,7 @@ function CardContainerClass:moveCard(destContainer, cardToMove, prevContainer)
     end
   end
 
+  -- Actually move card
   for i, card in ipairs(self.cardTable) do
     if card == cardToMove then
       card.container = destContainer
@@ -84,7 +85,6 @@ end
 function CardContainerClass:addCard(cardToAdd)
 
   if (#self.cardTable >= self.capacity) then
-    print("Cannot add card to container since its already full")
     return false
   end
 

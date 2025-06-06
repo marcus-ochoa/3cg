@@ -36,7 +36,7 @@ function CardDisplayerClass:draw()
 
   -- Draws back fill if set
   if self.fillEnabled then
-    love.graphics.setColor(self.fillColor or {0.5, 0.5, 0.5, 1})
+    love.graphics.setColor(self.fillColor or Colors.gray)
     love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
   end
 
@@ -77,6 +77,7 @@ end
 
 function CardDisplayerClass:getCardPosition(cardIndex)
 
+  -- Calculates card position based on number of cards present
   local row = self.rows - (cardIndex % self.rows)
   local col = math.ceil(cardIndex / self.rows)
 

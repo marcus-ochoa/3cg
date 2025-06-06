@@ -31,18 +31,18 @@ function ButtonClass:draw()
 
   -- Draw shadow if mouse over button
   if self.mouseOver then
-    love.graphics.setColor(0, 0, 0, 0.8)
+    love.graphics.setColor(Colors.shadow)
     local offset = 4
     love.graphics.rectangle("fill", self.position.x + offset, self.position.y + offset, self.size.x, self.size.y, 6, 6)
   end
 
   -- Draw back fill
-  love.graphics.setColor(0.5, 0.5, 0.5, 1)
+  love.graphics.setColor(Colors.gray)
   love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
 
   -- Draw text if set
   if self.text ~= nil then
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(Colors.white)
     love.graphics.printf(self.text, self.position.x, self.position.y - 8 + (self.size.y / 2), self.size.x, "center")
   end
 end

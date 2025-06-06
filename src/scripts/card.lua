@@ -49,27 +49,27 @@ function CardClass:draw(position)
 
   -- Draw shadow if cards are not idle (light if mouse hovering, heavy if grabbed)
   if self.state ~= CARD_STATE.IDLE then
-    love.graphics.setColor(0, 0, 0, 0.8)
+    love.graphics.setColor(Colors.shadow)
     local offset = 4 * (self.state == CARD_STATE.GRABBED and 2 or 1)
     love.graphics.rectangle("fill", position.x + offset, position.y + offset, self.size.x, self.size.y, 6, 6)
   end
 
-  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.setColor(Colors.white)
 
   -- Draws face up or face down image
   if self.isFaceUp then
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(Colors.white)
     love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
 
-    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.setColor(Colors.black)
     love.graphics.printf(self.name, position.x, position.y - 8 + (self.size.y * (1/10)), self.size.x - 8, "center")
     love.graphics.printf("Cost: " .. self.cost, position.x, position.y - 8 + (self.size.y * (2/10)), self.size.x - 8, "center")
     love.graphics.printf("Power: " .. self.power, position.x, position.y - 8 + (self.size.y * (3/10)), self.size.x - 8, "center")
     love.graphics.printf(self.text, position.x + 8, position.y - 8 + (self.size.y * (5/10)), self.size.x - 8, "left")
   else
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(Colors.white)
     love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
-    love.graphics.setColor(0.7, 0, 0.5, 1)
+    love.graphics.setColor(Colors.purple)
     love.graphics.rectangle("fill", position.x + 5, position.y + 5, self.size.x - 10, self.size.y - 10, 6, 6)
   end
 end
