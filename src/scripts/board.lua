@@ -91,6 +91,8 @@ function BoardClass:revealCards(isPlayer)
   
   for _, card in ipairs(subject.staged.cardTable) do
     card:onReveal()
+
+    -- Calls card played here event for all cards at the location
     self.player.locations[card.container.location]:callOnCardPlayedHere(card)
     self.opponent.locations[card.container.location]:callOnCardPlayedHere(card)
   end
@@ -98,9 +100,12 @@ end
 
 function BoardClass:endTurn()
   for i = 1, 3 do
+
+    -- Calls end turn event for all cards
     self.player.locations[i]:callOnEndTurn()
     self.opponent.locations[i]:callOnEndTurn()
 
+    -- Adds round result to total score
     local pointDiff = self.player.locations[i]:getTotalPower() - self.opponent.locations[i]:getTotalPower()
     if pointDiff > 0 then
       self.player.points = self.player.points + pointDiff

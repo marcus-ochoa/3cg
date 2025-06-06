@@ -24,8 +24,6 @@ end
 
 function GameManagerClass:updateGameState(newGameState)
   self.gameState = newGameState
-
-  print("Game state updated: " .. self.gameState)
   UIManager:updateGameState(newGameState)
 
   if self.gameState == GAME_STATE.MENU then
@@ -38,6 +36,8 @@ function GameManagerClass:updateGameState(newGameState)
     Board:drawCard(false)
   
   elseif self.gameState == GAME_STATE.OPPONENT_TURN then
+
+    -- Basic AI opponent card play by attempting to move cards in hand to random locations
     for _, card in ipairs(Board.opponent.hand.cardTable) do
       Board.opponent.hand:moveCard(Board.opponent.locations[love.math.random(3)], card)
     end
@@ -51,6 +51,7 @@ function GameManagerClass:updateGameState(newGameState)
     local playerWinningDiff = Board.player.points - Board.opponent.points
     local isPlayerFirst = false
 
+    -- Choose who to reveal first based on who is winning
     if playerWinningDiff > 0 then
       isPlayerFirst = true
     elseif playerWinningDiff == 0 then
@@ -64,6 +65,7 @@ function GameManagerClass:updateGameState(newGameState)
     Board:endTurn()
     Board.round = Board.round + 1
 
+    -- Check win/loss state
     if (Board.player.points >= WIN_POINTS or Board.opponent.points >= WIN_POINTS) and Board.player.points ~= Board.opponent.points then
       if Board.player.points > Board.opponent.points then
         UIManager.textboxes.general.result.text = "YOU WIN"

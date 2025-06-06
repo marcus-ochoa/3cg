@@ -4,6 +4,7 @@
 io.stdout:setvbuf("no")
 
 require "scripts.vector"
+require "scripts.colors"
 require "scripts.gameManager"
 require "src.scripts.uiManager"
 require "scripts.board"

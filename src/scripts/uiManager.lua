@@ -46,8 +46,8 @@ function UIManagerClass:setup()
       playerMana = TextboxClass:new(1300, 900, 100, 50, 1, "mana", false),
       playerPoints = TextboxClass:new(1500, 600, 150, 50, 1, "points", false),
       opponentPoints = TextboxClass:new(1500, 200, 150, 50, 1, "opp points", false),
-      menu = TextboxClass:new(0, 0, 1920, 1080, 2, "IM GONNA SNAP\n(a Marvel Snap-pish game)", true, {0.7, 0, 0.5, 1}),
-      result = TextboxClass:new(0, 0, 1920, 1080, 2, "YOU SOMETHING", true, {0.7, 0, 0.5, 1}),
+      menu = TextboxClass:new(0, 0, 1920, 1080, 2, "IM GONNA SNAP\n(a Marvel Snap-pish game)", true, Colors.purple),
+      result = TextboxClass:new(0, 0, 1920, 1080, 2, "YOU SOMETHING", true, Colors.purple),
     },
     playerLocations = {
       TextboxClass:new(420, 600, 100, 50, 1, "placeholder", false),
@@ -70,10 +70,12 @@ end
 
 function UIManagerClass:update()
   
+  -- Updating general board info
   self.textboxes.general.playerMana.text = "Mana: " .. tostring(Board.player.mana)
   self.textboxes.general.playerPoints.text = "Player Points: " .. tostring(Board.player.points)
   self.textboxes.general.opponentPoints.text = "Opponent Points: " .. tostring(Board.opponent.points)
 
+  -- Updating player location powers
   for i, location in ipairs(Board.player.locations) do
     self.textboxes.playerLocations[i].text = location:getTotalPower()
   end
@@ -88,6 +90,8 @@ function UIManagerClass:update()
 end
 
 function UIManagerClass:draw()
+  
+  -- Draw all objects in the drawables table
   for _, layer in ipairs(self.drawables) do
     for _, drawable in ipairs(layer) do
       drawable:draw()
@@ -96,6 +100,8 @@ function UIManagerClass:draw()
 end
 
 function UIManagerClass:registerDrawable(drawable, layer)
+
+  -- Ensures object can be drawn and adds it to the draw table
   if type(drawable.draw) ~= "function" then
     print("ERROR: trying to register drawable without draw function")
   end
@@ -104,6 +110,8 @@ function UIManagerClass:registerDrawable(drawable, layer)
 end
 
 function UIManagerClass:registerClickable(clickable)
+
+  -- Ensures object can be drawn and adds it to the click table
   if type(clickable.click) ~= "function" then
     print("ERROR: trying to register drawable without draw function")
   end
@@ -112,6 +120,8 @@ function UIManagerClass:registerClickable(clickable)
 end
 
 function UIManagerClass:setCardsInteractable(isInteractable)
+
+  -- Sets interactability of all interactable card displayers
   for _, displayer in ipairs(self.cardDisplayers.interactables) do
     displayer.interactable = isInteractable
   end
@@ -119,6 +129,7 @@ end
 
 function UIManagerClass:updateGameState(newGameState)
   
+  -- Called from game manager to update ui accordingly
   if (newGameState == GAME_STATE.MENU) then
     self:setCardsInteractable(false)
     self.buttons.submit.active = false
@@ -145,10 +156,4 @@ function UIManagerClass:updateGameState(newGameState)
     self.buttons.restart.active = true
     self.textboxes.general.result.active = true
   end
-
 end
-
-
-
-
-
