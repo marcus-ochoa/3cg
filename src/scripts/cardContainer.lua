@@ -14,7 +14,7 @@ CARD_CONTAINER_TYPES = {
 
 CardContainerClass = {}
 
-function CardContainerClass:new(isPlayerOwned, type, capacity, location)
+function CardContainerClass:new(entity, type, capacity, location)
   
   local cardContainer = {}
   local metadata = {__index = CardContainerClass}
@@ -24,7 +24,7 @@ function CardContainerClass:new(isPlayerOwned, type, capacity, location)
   cardContainer.cardTable = {}
   cardContainer.location = location
   cardContainer.capacity = capacity or 100
-  cardContainer.isPlayerOwned = isPlayerOwned
+  cardContainer.entity = entity
 
   return cardContainer
 end
@@ -45,13 +45,13 @@ function CardContainerClass:moveCard(destContainer, cardToMove, prevContainer)
   -- If in the staging phase, add and subtract mana appropriately
   if (GameManager.gameState == GAME_STATE.PLAYER_TURN) or (GameManager.gameState == GAME_STATE.OPPONENT_TURN) then
     if (prevContainer.type == CARD_CONTAINER_TYPES.HAND) and (destContainer.type == CARD_CONTAINER_TYPES.LOCATION) then
-      if not Board:addMana(destContainer.isPlayerOwned, -cardToMove.baseCost) then
+      if not destContainer.entity:addMana(-cardToMove.baseCost) then
         return false
       end
-      Board:stageCard(self.isPlayerOwned, cardToMove)
+      cardToMove:stage()
     elseif (prevContainer.type == CARD_CONTAINER_TYPES.LOCATION) and (destContainer.type == CARD_CONTAINER_TYPES.HAND) then
-      Board:addMana(destContainer.isPlayerOwned, cardToMove.baseCost)
-      Board:unstageCard(self.isPlayerOwned, cardToMove)
+      destContainer.entity:addMana(cardToMove.baseCost)
+      cardToMove:unstage()
     end
   end
 

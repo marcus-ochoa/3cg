@@ -16,6 +16,7 @@ function CardDisplayerClass:new(xPos, yPos, xSize, ySize, layer, xCardOffset, yC
   cardDisplayer.size = Vector(xSize, ySize)
 
   cardDisplayer.cardsTotalOffset = Vector(xCardTotalOffset, yCardTotalOffset)
+  
   -- Offset from one card in the stack to the next
   cardDisplayer.cardIndividualOffset = Vector(xCardOffset, yCardOffset)
 

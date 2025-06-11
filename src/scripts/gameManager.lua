@@ -30,10 +30,8 @@ function GameManagerClass:updateGameState(newGameState)
     GameSetter.resetGame()
   
   elseif self.gameState == GAME_STATE.PLAYER_TURN then
-    Board:setMana(true, Board.round)
-    Board:setMana(false, Board.round)
-    Board:drawCard(true)
-    Board:drawCard(false)
+    Board:setMana(Board.round)
+    Board:drawCard()
   
   elseif self.gameState == GAME_STATE.OPPONENT_TURN then
 
@@ -48,18 +46,18 @@ function GameManagerClass:updateGameState(newGameState)
 
   elseif self.gameState == GAME_STATE.REVEAL then
 
-    local playerWinningDiff = Board.player.points - Board.opponent.points
-    local isPlayerFirst = false
+    local winningEntity = Board:getWinningEntity()
 
-    -- Choose who to reveal first based on who is winning
-    if playerWinningDiff > 0 then
-      isPlayerFirst = true
-    elseif playerWinningDiff == 0 then
-      isPlayerFirst = love.math.random(2) == 2
+    -- Choose who to reveal first randomly if tied
+    if winningEntity == nil then
+      winningEntity = (love.math.random(2) == 2) and Board.player or Board.opponent
     end
 
-    Board:revealCards(isPlayerFirst)
-    Board:revealCards(not isPlayerFirst)
+    winningEntity:revealCards()
+    
+    local losingEntity = Board:getOpposition(winningEntity)
+    losingEntity:revealCards()
+
     Board:clearStaging()
 
     Board:endTurn()

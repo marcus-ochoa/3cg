@@ -129,6 +129,10 @@ function CardClass:onCardPlayedHere(playedCard)
   end
 end
 
+function CardClass:getOwner()
+  return self.container.entity
+end
+
 function CardClass:setGrabbed()
   self.state = CARD_STATE.GRABBED
 end
@@ -142,6 +146,21 @@ function CardClass:setIdle()
   if self.state ~= CARD_STATE.GRABBED then
     self.state = CARD_STATE.IDLE
   end
+end
+
+function CardClass:stage()
+  local owner = self:getOwner()
+  owner:stageCard(self)
+end
+
+function CardClass:unstage()
+  local owner = self:getOwner()
+  owner:unstageCard(self)
+end
+
+function CardClass:discard()
+  local owner = self:getOwner()
+  owner:discardCard(self)
 end
 
 function CardClass:addPower(powerToAdd)

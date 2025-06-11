@@ -8,7 +8,7 @@ function GrabberClass:new()
   local metadata = {__index = GrabberClass}
   setmetatable(grabber, metadata)
   
-  grabber.cardContainer = CardContainerClass:new(true, CARD_CONTAINER_TYPES.GRABBER, 1)
+  grabber.cardContainer = CardContainerClass:new(Board.player, CARD_CONTAINER_TYPES.GRABBER, 1)
   grabber.cardDisplayer = CardDisplayerClass:new(0, 0, CARD_SIZE.x, CARD_SIZE.y, 3, 0, 0, 0, 0, 1, false, grabber.cardContainer, false)
   grabber.prevCardContainer = nil
 

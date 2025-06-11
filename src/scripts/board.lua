@@ -12,90 +12,42 @@ function BoardClass:new()
   local metadata = {__index = BoardClass}
   setmetatable(board, metadata)
 
-  board.player = {
-    deck = CardContainerClass:new(true, CARD_CONTAINER_TYPES.DECK),
-    hand = CardContainerClass:new(true, CARD_CONTAINER_TYPES.HAND, 7),
-    discard = CardContainerClass:new(true, CARD_CONTAINER_TYPES.DISCARD),
-    locations = {
-      CardContainerClass:new(true, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.A),
-      CardContainerClass:new(true, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.B),
-      CardContainerClass:new(true, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.C)
-    },
-    staged = CardContainerClass:new(true, CARD_CONTAINER_TYPES.STAGED),
-    mana = 0,
-    points = 0
-  }
-
-  board.opponent = {
-    deck = CardContainerClass:new(false, CARD_CONTAINER_TYPES.DECK),
-    hand = CardContainerClass:new(false, CARD_CONTAINER_TYPES.HAND, 7),
-    discard = CardContainerClass:new(false, CARD_CONTAINER_TYPES.DISCARD),
-    locations = {
-      CardContainerClass:new(false, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.A),
-      CardContainerClass:new(false, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.B),
-      CardContainerClass:new(false, CARD_CONTAINER_TYPES.LOCATION, 4, LOCATIONS.C)
-    },
-    staged = CardContainerClass:new(false, CARD_CONTAINER_TYPES.STAGED),
-    mana = 0,
-    points = 0
-  }
-
+  board.player = EntityClass:new()
+  board.opponent = EntityClass:new()
   board.round = 1
 
   return board
 end
 
-function BoardClass:getSubject(isPlayer)
-  return isPlayer and self.player or self.opponent
+function BoardClass:getOpposition(entity)
+  return (entity == self.player) and self.opponent or self.player
 end
 
-function BoardClass:addMana(isPlayer, mana)
-  local subject = self:getSubject(isPlayer)
-
-  if (subject.mana + mana) < 0 then
-    return false
+function BoardClass:getWinningEntity()
+  if self.player.points > self.opponent.points then
+    return self.player
   end
 
-  subject.mana = subject.mana + mana
-  return true
+  if self.opponent.points > self.player.points then
+    return self.opponent
+  end
+
+  return nil
 end
 
-function BoardClass:setMana(isPlayer, mana)
-  local subject = self:getSubject(isPlayer)
-  subject.mana = mana
+function BoardClass:setMana(mana)
+  self.player:setMana(mana)
+  self.opponent:setMana(mana)
 end
 
-function BoardClass:drawCard(isPlayer)
-  local subject = self:getSubject(isPlayer)
-  subject.deck:moveCard(subject.hand)
-  return true
-end
-
-function BoardClass:stageCard(isPlayer, card)
-  local subject = self:getSubject(isPlayer)
-  subject.staged:addCard(card)
-end
-
-function BoardClass:unstageCard(isPlayer, card)
-  local subject = self:getSubject(isPlayer)
-  subject.staged:removeCard(card)
+function BoardClass:drawCard()
+  self.player:drawCard()
+  self.opponent:drawCard()
 end
 
 function BoardClass:clearStaging()
-  self.player.staged:clear()
-  self.opponent.staged:clear()
-end
-
-function BoardClass:revealCards(isPlayer)
-  local subject = self:getSubject(isPlayer)
-  
-  for _, card in ipairs(subject.staged.cardTable) do
-    card:onReveal()
-
-    -- Calls card played here event for all cards at the location
-    self.player.locations[card.container.location]:callOnCardPlayedHere(card)
-    self.opponent.locations[card.container.location]:callOnCardPlayedHere(card)
-  end
+  self.player:clearStaging()
+  self.opponent:clearStaging()
 end
 
 function BoardClass:endTurn()
@@ -115,41 +67,8 @@ function BoardClass:endTurn()
   end
 end
 
-function BoardClass:discardCard(card)
-  local subject = self:getSubject(card.container.isPlayerOwned)
-  card:onDiscard()
-  card.container:moveCard(subject.discard, card)
-end
-
 function BoardClass:reset()
-  local subject = self:getSubject(true)
-  subject.deck:clear()
-  subject.hand:clear()
-  subject.discard:clear()
-  for _, location in ipairs(subject.locations) do
-    location:clear()
-  end
-  subject.staged:clear()
-  subject.mana = 0
-  subject.points = 0
-
-  subject = self:getSubject(false)
-  subject.deck:clear()
-  subject.hand:clear()
-  subject.discard:clear()
-  for _, location in ipairs(subject.locations) do
-    location:clear()
-  end
-  subject.staged:clear()
-  subject.mana = 0
-  subject.points = 0
-
+  self.player:reset()
+  self.opponent:reset()
   self.round = 1
 end
-
-function BoardClass:isWinningAtLocation(isPlayer, location)
-  local subject = self:getSubject(isPlayer)
-  local opposer = self:getSubject(not isPlayer)
-  return subject.locations[location]:getTotalPower() > opposer.locations[location]:getTotalPower()
-end
-
