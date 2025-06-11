@@ -4,7 +4,8 @@ GAME_STATE = {
   PLAYER_TURN = 1,
   OPPONENT_TURN = 2,
   REVEAL = 3,
-  RESULT = 4
+  EVAL = 4,
+  RESULT = 5
 }
 
 WIN_POINTS = 20
@@ -46,17 +47,9 @@ function GameManagerClass:updateGameState(newGameState)
 
   elseif self.gameState == GAME_STATE.REVEAL then
 
-    local winningEntity = Board:getWinningEntity()
+    Board:revealCards(0.5)
 
-    -- Choose who to reveal first randomly if tied
-    if winningEntity == nil then
-      winningEntity = (love.math.random(2) == 2) and Board.player or Board.opponent
-    end
-
-    winningEntity:revealCards()
-    
-    local losingEntity = Board:getOpposition(winningEntity)
-    losingEntity:revealCards()
+  elseif self.gameState == GAME_STATE.EVAL then
 
     Board:clearStaging()
 

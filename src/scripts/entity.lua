@@ -44,7 +44,7 @@ function EntityClass:stageCard(card)
     print("ERROR: card does not belong to this entity")
     return
   end
-
+  
   self.staged:addCard(card)
 end
 
@@ -60,17 +60,6 @@ end
 
 function EntityClass:clearStaging()
   self.staged:clear()
-end
-
-function EntityClass:revealCards()
-  
-  for _, card in ipairs(self.staged.cardTable) do
-    card:onReveal()
-
-    -- Calls card played here event for all cards at the location
-    self.locations[card.container.location]:callOnCardPlayedHere(card)
-    Board:getOpposition(self).locations[card.container.location]:callOnCardPlayedHere(card)
-  end
 end
 
 function EntityClass:discardCard(card)

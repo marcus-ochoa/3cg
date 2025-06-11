@@ -43,8 +43,10 @@ function love.draw()
   UIManager:draw()
 end
 
-function love.update()
+-- Update UI and Board
+function love.update(dt)
   UIManager:update()
+  Board:update(dt)
 end
 
 -- Tie engine mouse events to the grabber

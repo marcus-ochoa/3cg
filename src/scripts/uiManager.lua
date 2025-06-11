@@ -152,6 +152,9 @@ function UIManagerClass:updateGameState(newGameState)
     self:setCardsInteractable(false)
     self.buttons.submit.active = false
 
+  elseif newGameState == GAME_STATE.REVEAL then
+    self.buttons.menu.active = false
+
   elseif newGameState == GAME_STATE.RESULT then
     self.buttons.restart.active = true
     self.textboxes.general.result.active = true
