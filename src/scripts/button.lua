@@ -37,13 +37,14 @@ function ButtonClass:draw()
   end
 
   -- Draw back fill
-  love.graphics.setColor(Colors.gray)
-  love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+  love.graphics.setColor(Colors.blue)
+  love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y, 6, 6)
 
   -- Draw text if set
   if self.text ~= nil then
     love.graphics.setColor(Colors.white)
-    love.graphics.printf(self.text, self.position.x, self.position.y - 8 + (self.size.y / 2), self.size.x, "center")
+    love.graphics.setFont(Fonts.titillium)
+    love.graphics.printf(self.text, self.position.x, self.position.y - 15 + (self.size.y / 2), self.size.x, "center")
   end
 end
 

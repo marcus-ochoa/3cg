@@ -34,35 +34,35 @@ function UIManagerClass:setup()
   }
 
   self.buttons = {
-    submit = ButtonClass:new(1300, 1000, 100, 50, 1, GameManager, GameManager.updateGameState, {GAME_STATE.OPPONENT_TURN}, "submit"),
-    menu = ButtonClass:new(1500, 1000, 100, 50, 1, GameManager, GameManager.updateGameState, {GAME_STATE.MENU}, "menu"),
-    restart = ButtonClass:new(910, 600, 100, 50, 3, GameManager, GameManager.updateGameState, {GAME_STATE.MENU}, "restart"),
-    start = ButtonClass:new(910, 600, 100, 50, 3, GameManager, GameManager.updateGameState, {GAME_STATE.PLAYER_TURN}, "start"),
-    exit = ButtonClass:new(910, 700, 100, 50, 3, GameManager, GameManager.closeGame, {}, "exit"),
+    submit = ButtonClass:new(1300, 1000, 100, 50, 1, GameManager, GameManager.updateGameState, {GAME_STATE.OPPONENT_TURN}, "SUBMIT"),
+    menu = ButtonClass:new(1420, 1000, 100, 50, 1, GameManager, GameManager.updateGameState, {GAME_STATE.MENU}, "MENU"),
+    restart = ButtonClass:new(910, 600, 100, 50, 3, GameManager, GameManager.updateGameState, {GAME_STATE.MENU}, "RESTART"),
+    start = ButtonClass:new(910, 600, 100, 50, 3, GameManager, GameManager.updateGameState, {GAME_STATE.PLAYER_TURN}, "START"),
+    exit = ButtonClass:new(910, 700, 100, 50, 3, GameManager, GameManager.closeGame, {}, "EXIT"),
   }
 
   self.textboxes = {
     general = {
-      playerMana = TextboxClass:new(1300, 900, 100, 50, 1, "mana", false),
-      playerPoints = TextboxClass:new(1500, 600, 150, 50, 1, "points", false),
-      opponentPoints = TextboxClass:new(1500, 200, 150, 50, 1, "opp points", false),
-      menu = TextboxClass:new(0, 0, 1920, 1080, 2, "IM GONNA SNAP\n(a Marvel Snap-pish game)", true, Colors.purple),
-      result = TextboxClass:new(0, 0, 1920, 1080, 2, "YOU SOMETHING", true, Colors.purple),
+      playerMana = TextboxClass:new(1310, 900, 80, 80, 1, "mana", true, Colors.purple, true, nil, -26),
+      playerPoints = TextboxClass:new(1500, 600, 100, 100, 1, "points", true, Colors.purple, true, nil, -26),
+      opponentPoints = TextboxClass:new(1500, 200, 100, 100, 1, "opp points", true, Colors.purple, true, nil, -26),
+      menu = TextboxClass:new(0, 0, 1920, 1080, 2, "I'M GONNA SNAP\n(a Marvel Snap-pish game)", true, Colors.purple, false, Fonts.vast, -200),
+      result = TextboxClass:new(0, 0, 1920, 1080, 2, "YOU [RESULT]", true, Colors.film),
     },
     playerLocations = {
-      TextboxClass:new(420, 600, 100, 50, 1, "placeholder", false),
-      TextboxClass:new(870, 600, 100, 50, 1, "placeholder", false),
-      TextboxClass:new(1320, 600, 100, 50, 1, "placeholder", false)
+      TextboxClass:new(430, 600, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16),
+      TextboxClass:new(880, 600, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16),
+      TextboxClass:new(1330, 600, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16)
     },
     opponentLocations = {
-      TextboxClass:new(420, 200, 100, 50, 1, "placeholder", false),
-      TextboxClass:new(870, 200, 100, 50, 1, "placeholder", false),
-      TextboxClass:new(1320, 200, 100, 50, 1, "placeholder", false)
+      TextboxClass:new(430, 200, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16),
+      TextboxClass:new(880, 200, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16),
+      TextboxClass:new(1330, 200, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16)
     },
     totalLocations = {
-      TextboxClass:new(420, 410, 100, 50, 1, "placeholder", false),
-      TextboxClass:new(870, 410, 100, 50, 1, "placeholder", false),
-      TextboxClass:new(1320, 410, 100, 50, 1, "placeholder", false)
+      TextboxClass:new(430, 409, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16),
+      TextboxClass:new(880, 409, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16),
+      TextboxClass:new(1330, 409, 50, 50, 1, "placeholder", true, Colors.purple, true, nil, -16)
     }
   }
 
@@ -71,9 +71,9 @@ end
 function UIManagerClass:update()
   
   -- Updating general board info
-  self.textboxes.general.playerMana.text = "Mana: " .. tostring(Board.player.mana)
-  self.textboxes.general.playerPoints.text = "Player Points: " .. tostring(Board.player.points)
-  self.textboxes.general.opponentPoints.text = "Opponent Points: " .. tostring(Board.opponent.points)
+  self.textboxes.general.playerMana.text = "MANA\n" .. tostring(Board.player.mana)
+  self.textboxes.general.playerPoints.text = "PLYR PTS\n" .. tostring(Board.player.points)
+  self.textboxes.general.opponentPoints.text = "OPP PTS\n" .. tostring(Board.opponent.points)
 
   -- Updating player location powers
   for i, location in ipairs(Board.player.locations) do

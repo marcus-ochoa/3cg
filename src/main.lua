@@ -5,6 +5,7 @@ io.stdout:setvbuf("no")
 
 require "scripts.vector"
 require "scripts.colors"
+require "scripts.fonts"
 require "scripts.gameManager"
 require "scripts.uiManager"
 require "scripts.entity"
@@ -25,7 +26,8 @@ function love.load()
   -- Window setup
   love.window.setMode(1920, 1080, {fullscreen=true})
   love.window.setTitle("I'm Gonna Snap")
-  love.graphics.setBackgroundColor(Colors.green)
+  love.graphics.setBackgroundColor(Colors.gray)
+  love.graphics.setFont(Fonts.lora)
 
   GameManager = GameManagerClass:new()
   Board = BoardClass:new()
