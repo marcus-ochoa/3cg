@@ -169,8 +169,14 @@ end
 
 function CardClass:addPower(powerToAdd)
   if (self.power + powerToAdd) >= 0 then
-      self.power = self.power + powerToAdd
-    end
+    self.power = self.power + powerToAdd
+  end
+end
+
+function CardClass:setPower(powerToSet)
+  if powerToSet >= 0 then
+    self.power = powerToSet
+  end
 end
 
 function CardClass:getCopy()

@@ -26,6 +26,41 @@ CardBehaviors = {
       local target = Board:getOpposition(card:getOwner())
       target.locations[card.container.location]:addPower(-1)
     end,
+
+    function (card)
+      local target = card:getOwner()
+      local cardCopy = card:getCopy()
+      cardCopy:setPower(card.power + 1)
+      target.hand:addCard(cardCopy)
+    end,
+
+    function (card)
+      local target = card:getOwner()
+      local powSum = 0
+
+      for _, locCard in ipairs(target.locations[card.container.location]:getPlayedCards()) do
+        if locCard ~= card then
+          powSum = powSum + locCard.power
+          locCard:discard()
+        end
+      end
+
+      card:addPower(powSum)
+    end,
+
+    function (card)
+      local target = card:getOwner()
+      local powSum = 0
+      
+      for _, locCard in ipairs(target.locations[card.container.location]:getPlayedCards()) do
+        if locCard ~= card then
+          powSum = powSum + 2
+          locCard:discard()
+        end
+      end
+
+      card:addPower(powSum)
+    end,
   },
 
   endTurn = {
@@ -45,13 +80,20 @@ CardBehaviors = {
         card:addPower(1)
       end
     end,
+
+    function (card)
+      local target = card:getOwner()
+      if target.locations[card.container.location]:isFullCheck() then
+        card:addPower(-1)
+      end
+    end,
   },
 
   discard = {
 
     function (card)
       local target = card:getOwner()
-      for i = 1, 2 do
+      for _ = 1, 2 do
         local cardCopy = card:getCopy()
         target.hand:addCard(cardCopy)
       end

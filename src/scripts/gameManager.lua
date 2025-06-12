@@ -8,7 +8,7 @@ GAME_STATE = {
   RESULT = 5
 }
 
-WIN_POINTS = 20
+WIN_POINTS = 25
 
 GameManagerClass = {}
 

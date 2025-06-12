@@ -38,7 +38,7 @@ function CardContainerClass:moveCard(destContainer, cardToMove, prevContainer)
     cardToMove = self.cardTable[#self.cardTable]
   end
   
-  if (#destContainer.cardTable >= destContainer.capacity) then
+  if destContainer:isFullCheck() then
     return false
   end
 
@@ -84,7 +84,7 @@ end
 
 function CardContainerClass:addCard(cardToAdd)
 
-  if (#self.cardTable >= self.capacity) then
+  if self:isFullCheck() then
     return false
   end
 
@@ -135,6 +135,22 @@ end
 
 function CardContainerClass:getNumberOfCards()
   return #self.cardTable
+end
+
+function CardContainerClass:isFullCheck()
+  return #self.cardTable >= self.capacity
+end
+
+function CardContainerClass:getPlayedCards()
+  local playedCardTable = {}
+
+  for _, card in ipairs(self.cardTable) do
+    if card.isPlayed then
+      table.insert(playedCardTable, card)
+    end
+  end
+
+  return playedCardTable
 end
 
 function CardContainerClass:callOnEndTurn()
