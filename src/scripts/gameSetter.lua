@@ -30,7 +30,7 @@ local function loadCardData()
   for i = 2, #cardData do
     local cardVals = cardData[i]
     ---@diagnostic disable-next-line: deprecated
-    local card = CardDataClass:new(i, unpack(cardVals))
+    local card = CardDataClass:new(i - 1, unpack(cardVals))
     table.insert(CardDataClasses, card)
   end
 end

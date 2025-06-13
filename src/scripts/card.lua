@@ -54,20 +54,24 @@ function CardClass:draw(position)
     love.graphics.rectangle("fill", position.x + offset, position.y + offset, self.size.x, self.size.y, 6, 6)
   end
 
-  love.graphics.setColor(Colors.white)
-
   -- Draws face up or face down image
   if self.isFaceUp then
-    love.graphics.setColor(Colors.white)
+    love.graphics.setColor(Colors.babyBlue)
     love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
 
     love.graphics.setColor(Colors.black)
-    love.graphics.printf(self.name, position.x, position.y - 8 + (self.size.y * (1/10)), self.size.x - 8, "center")
-    love.graphics.printf("Cost: " .. self.cost, position.x, position.y - 8 + (self.size.y * (2/10)), self.size.x - 8, "center")
-    love.graphics.printf("Power: " .. self.power, position.x, position.y - 8 + (self.size.y * (3/10)), self.size.x - 8, "center")
-    love.graphics.printf(self.text, position.x + 8, position.y - 8 + (self.size.y * (5/10)), self.size.x - 8, "left")
+
+    love.graphics.setFont(Fonts.titillium)
+    love.graphics.printf(self.name, position.x, position.y - 8 + (self.size.y * (1/20)), self.size.x - 8, "center")
+
+    love.graphics.setFont(Fonts.inria)
+    love.graphics.printf("Cost: " .. self.cost, position.x + 8, position.y - 8 + (self.size.y * (3/10)), self.size.x - 8, "left")
+    love.graphics.printf("Pow: " .. self.power, position.x, position.y - 8 + (self.size.y * (3/10)), self.size.x - 18, "right")
+
+    love.graphics.setFont(Fonts.lora)
+    love.graphics.printf(self.text, position.x + 8, position.y - 8 + (self.size.y * (5/10)), self.size.x - 12, "left")
   else
-    love.graphics.setColor(Colors.white)
+    love.graphics.setColor(Colors.babyBlue)
     love.graphics.rectangle("fill", position.x, position.y, self.size.x, self.size.y, 6, 6)
     love.graphics.setColor(Colors.purple)
     love.graphics.rectangle("fill", position.x + 5, position.y + 5, self.size.x - 10, self.size.y - 10, 6, 6)
@@ -129,6 +133,10 @@ function CardClass:onCardPlayedHere(playedCard)
   end
 end
 
+function CardClass:getOwner()
+  return self.container.entity
+end
+
 function CardClass:setGrabbed()
   self.state = CARD_STATE.GRABBED
 end
@@ -144,10 +152,31 @@ function CardClass:setIdle()
   end
 end
 
+function CardClass:stage()
+  local owner = self:getOwner()
+  owner:stageCard(self)
+end
+
+function CardClass:unstage()
+  local owner = self:getOwner()
+  owner:unstageCard(self)
+end
+
+function CardClass:discard()
+  local owner = self:getOwner()
+  owner:discardCard(self)
+end
+
 function CardClass:addPower(powerToAdd)
   if (self.power + powerToAdd) >= 0 then
-      self.power = self.power + powerToAdd
-    end
+    self.power = self.power + powerToAdd
+  end
+end
+
+function CardClass:setPower(powerToSet)
+  if powerToSet >= 0 then
+    self.power = powerToSet
+  end
 end
 
 function CardClass:getCopy()

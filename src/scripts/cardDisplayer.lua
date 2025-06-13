@@ -16,6 +16,7 @@ function CardDisplayerClass:new(xPos, yPos, xSize, ySize, layer, xCardOffset, yC
   cardDisplayer.size = Vector(xSize, ySize)
 
   cardDisplayer.cardsTotalOffset = Vector(xCardTotalOffset, yCardTotalOffset)
+  
   -- Offset from one card in the stack to the next
   cardDisplayer.cardIndividualOffset = Vector(xCardOffset, yCardOffset)
 
@@ -23,7 +24,7 @@ function CardDisplayerClass:new(xPos, yPos, xSize, ySize, layer, xCardOffset, yC
   cardDisplayer.interactable = interactable
 
   cardDisplayer.fillEnabled = fillEnabled
-  cardDisplayer.fillColor = fillColor
+  cardDisplayer.fillColor = fillColor or Colors.blue
 
   cardDisplayer.rows = rows
 
@@ -36,8 +37,8 @@ function CardDisplayerClass:draw()
 
   -- Draws back fill if set
   if self.fillEnabled then
-    love.graphics.setColor(self.fillColor or Colors.gray)
-    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+    love.graphics.setColor(self.fillColor)
+    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y, 6, 6)
   end
 
   for i, card in ipairs(self.cardContainer.cardTable) do

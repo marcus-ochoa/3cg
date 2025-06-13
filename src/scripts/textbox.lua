@@ -1,7 +1,7 @@
 
 TextboxClass = {}
 
-function TextboxClass:new(xPos, yPos, xSize, ySize, layer, text, fillEnabled, fillColor)
+function TextboxClass:new(xPos, yPos, xSize, ySize, layer, text, fillEnabled, fillColor, rounded, font, yOffset)
   local textbox = {}
   local metadata = {__index = TextboxClass}
   setmetatable(textbox, metadata)
@@ -11,7 +11,10 @@ function TextboxClass:new(xPos, yPos, xSize, ySize, layer, text, fillEnabled, fi
   textbox.active = true
   textbox.text = text
   textbox.fillEnabled = fillEnabled
-  textbox.fillColor = fillColor
+  textbox.fillColor = fillColor or Colors.gray
+  textbox.rounded = rounded or false
+  textbox.font = font or Fonts.titilliumLarge
+  textbox.yOffset = yOffset or -8
 
   UIManager:registerDrawable(textbox, layer)
 
@@ -26,19 +29,18 @@ function TextboxClass:draw()
 
   -- Draws back fill if set
   if self.fillEnabled then
-    love.graphics.setColor(self.fillColor or Colors.gray)
-    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
-  end
-
-  -- Draws back fill if set
-  if self.fillEnabled then
-    love.graphics.setColor(self.fillColor or Colors.gray)
-    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+    love.graphics.setColor(self.fillColor)
+    if self.rounded then
+      love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y, 6, 6)
+    else
+      love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+    end
   end
 
   -- Draw text if set
   if self.text ~= nil then
     love.graphics.setColor(Colors.white)
-    love.graphics.printf(self.text, self.position.x, self.position.y - 8 + (self.size.y / 2), self.size.x, "center")
+    love.graphics.setFont(self.font)
+    love.graphics.printf(self.text, self.position.x, self.position.y + self.yOffset + (self.size.y / 2), self.size.x, "center")
   end
 end

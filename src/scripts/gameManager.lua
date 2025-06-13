@@ -4,10 +4,11 @@ GAME_STATE = {
   PLAYER_TURN = 1,
   OPPONENT_TURN = 2,
   REVEAL = 3,
-  RESULT = 4
+  EVAL = 4,
+  RESULT = 5
 }
 
-WIN_POINTS = 20
+WIN_POINTS = 25
 
 GameManagerClass = {}
 
@@ -30,10 +31,8 @@ function GameManagerClass:updateGameState(newGameState)
     GameSetter.resetGame()
   
   elseif self.gameState == GAME_STATE.PLAYER_TURN then
-    Board:setMana(true, Board.round)
-    Board:setMana(false, Board.round)
-    Board:drawCard(true)
-    Board:drawCard(false)
+    Board:setMana(Board.round)
+    Board:drawCard()
   
   elseif self.gameState == GAME_STATE.OPPONENT_TURN then
 
@@ -48,18 +47,10 @@ function GameManagerClass:updateGameState(newGameState)
 
   elseif self.gameState == GAME_STATE.REVEAL then
 
-    local playerWinningDiff = Board.player.points - Board.opponent.points
-    local isPlayerFirst = false
+    Board:revealCards(0.5)
 
-    -- Choose who to reveal first based on who is winning
-    if playerWinningDiff > 0 then
-      isPlayerFirst = true
-    elseif playerWinningDiff == 0 then
-      isPlayerFirst = love.math.random(2) == 2
-    end
+  elseif self.gameState == GAME_STATE.EVAL then
 
-    Board:revealCards(isPlayerFirst)
-    Board:revealCards(not isPlayerFirst)
     Board:clearStaging()
 
     Board:endTurn()
