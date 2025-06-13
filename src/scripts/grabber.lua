@@ -9,7 +9,7 @@ function GrabberClass:new()
   setmetatable(grabber, metadata)
   
   grabber.cardContainer = CardContainerClass:new(Board.player, CARD_CONTAINER_TYPES.GRABBER, 1)
-  grabber.cardDisplayer = CardDisplayerClass:new(0, 0, CARD_SIZE.x, CARD_SIZE.y, 3, 0, 0, 0, 0, 1, false, grabber.cardContainer, false)
+  grabber.cardDisplayer = CardDisplayerClass:new(0, 0, CARD_SIZE.x, CARD_SIZE.y, 3, 0, 0, -CARD_SIZE.x / 2, -CARD_SIZE.y / 2, 1, false, grabber.cardContainer, false)
   grabber.prevCardContainer = nil
 
   return grabber
