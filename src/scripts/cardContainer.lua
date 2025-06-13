@@ -65,7 +65,6 @@ function CardContainerClass:moveCard(destContainer, cardToMove, prevContainer)
     end
   end
 
-  print("ERROR CARD NOT FOUND TO MOVE")
   return false
 end
 
@@ -77,8 +76,7 @@ function CardContainerClass:removeCard(cardToRemove)
       return true
     end
   end
-
-  print("ERROR CARD NOT FOUND TO REMOVE")
+  
   return false
 end
 

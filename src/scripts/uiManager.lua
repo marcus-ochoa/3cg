@@ -103,7 +103,7 @@ function UIManagerClass:registerDrawable(drawable, layer)
 
   -- Ensures object can be drawn and adds it to the draw table
   if type(drawable.draw) ~= "function" then
-    print("ERROR: trying to register drawable without draw function")
+    return
   end
   
   table.insert(self.drawables[layer], drawable)
@@ -113,7 +113,7 @@ function UIManagerClass:registerClickable(clickable)
 
   -- Ensures object can be drawn and adds it to the click table
   if type(clickable.click) ~= "function" then
-    print("ERROR: trying to register drawable without draw function")
+    return
   end
   
   table.insert(self.clickables, clickable)
