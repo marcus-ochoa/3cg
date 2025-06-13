@@ -41,7 +41,6 @@ end
 function EntityClass:stageCard(card)
 
   if self ~= card:getOwner() then
-    print("ERROR: card does not belong to this entity")
     return
   end
   
@@ -51,7 +50,6 @@ end
 function EntityClass:unstageCard(card)
 
   if self ~= card:getOwner() then
-    print("ERROR: card does not belong to this entity")
     return
   end
 
@@ -65,7 +63,6 @@ end
 function EntityClass:discardCard(card)
 
   if self ~= card:getOwner() then
-    print("ERROR: card does not belong to this entity")
     return
   end
 
